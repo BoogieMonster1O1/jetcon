@@ -4,6 +4,8 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 class Packet(private val requestId: Int, private val type: Int, private val body: String) {
+    constructor(type: Int, body: String) : this(-1, type, body)
+
     companion object {
         @JvmStatic
         val LOGIN_PACKET_ID = 3
@@ -19,7 +21,7 @@ class Packet(private val requestId: Int, private val type: Int, private val body
             val size: Int = bytes.int
             val requestId: Int = bytes.int
             val type: Int = bytes.int
-            val body: String = String(bytes.array())
+            val body = String(bytes.array())
             return Packet(requestId, type, body)
         }
     }
@@ -39,5 +41,9 @@ class Packet(private val requestId: Int, private val type: Int, private val body
 
     private fun getSize(): Int {
         return 4 + 4 + this.body.length
+    }
+
+    fun withRequestId(requestId: Int): Packet {
+        return Packet(requestId, type, body)
     }
 }
